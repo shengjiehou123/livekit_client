@@ -58,6 +58,8 @@ class LocalParticipant extends Participant<LocalTrackPublication> {
   final Map<String, Function(String? payload, RpcError? error)>
       _pendingResponses = {};
 
+  var Function( bool isBroadcasting)? onBroadcastStateChanged;
+
   @internal
   LocalParticipant({
     required Room room,
@@ -84,6 +86,7 @@ class LocalParticipant extends Participant<LocalTrackPublication> {
   void _broadcastStateChanged() {
     final isEnabled = BroadcastManager().isBroadcasting &&
         BroadcastManager().shouldPublishTrack;
+    onBroadcastStateChanged?.call(isEnabled);
     setScreenShareEnabled(isEnabled);
   }
 
