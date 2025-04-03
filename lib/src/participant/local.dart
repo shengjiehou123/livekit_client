@@ -58,7 +58,7 @@ class LocalParticipant extends Participant<LocalTrackPublication> {
   final Map<String, Function(String? payload, RpcError? error)>
   _pendingResponses = {};
 
-  final Function(bool isBroadcasting)? _onBroadcastStateChanged;
+  Function(bool isBroadcasting)? _onBroadcastStateChanged;
 
   @internal
   LocalParticipant({
@@ -81,11 +81,18 @@ class LocalParticipant extends Participant<LocalTrackPublication> {
       await unpublishAllTracks();
     });
   }
-  
-   // 定义一个 setter 方法
-  set onBroadcastStateChanged(var Function(bool isBroadcasting)? callback) {
+
+  // 定义一个 setter 方法
+  set onBroadcastStateChanged(Function(bool isBroadcasting)? callback) {
     _onBroadcastStateChanged = callback;
     // 可以在这里添加额外的逻辑
+  }
+
+  bool isEnabledBroadcast() {
+    final isEnabled =
+        BroadcastManager().isBroadcasting &&
+        BroadcastManager().shouldPublishTrack;
+    return isEnabled;
   }
 
   /// Handle broadcast state change (iOS only)
