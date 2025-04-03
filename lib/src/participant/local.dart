@@ -57,7 +57,7 @@ class LocalParticipant extends Participant<LocalTrackPublication> {
   // RPC Pending Responses
   final Map<String, Function(String? payload, RpcError? error)>
   _pendingResponses = {};
-  final Function(bool isBroadcasting)? _onBroadcastStateChanged;
+  Function(bool isBroadcasting)? _onBroadcastStateChanged;
 
   @internal
   LocalParticipant({
@@ -87,7 +87,12 @@ class LocalParticipant extends Participant<LocalTrackPublication> {
         BroadcastManager().isBroadcasting &&
         BroadcastManager().shouldPublishTrack;
     _onBroadcastStateChanged?.call(isEnabled);
-    setScreenShareEnabled(isEnabled);
+    setScreenShareEnabled(
+      isEnabled,
+      screenShareCaptureOptions: ScreenShareCaptureOptions(
+        useiOSBroadcastExtension: true,
+      ),
+    );
   }
 
   bool isEnabledBroadcast() {

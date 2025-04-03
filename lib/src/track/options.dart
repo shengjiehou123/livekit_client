@@ -22,10 +22,7 @@ import '../types/video_parameters.dart';
 import 'processor.dart';
 
 /// A type that represents front or back of the camera.
-enum CameraPosition {
-  front,
-  back,
-}
+enum CameraPosition { front, back }
 
 enum CameraFocusMode { auto, locked }
 
@@ -34,7 +31,8 @@ enum CameraExposureMode { auto, locked }
 /// Convenience extension for [CameraPosition].
 extension CameraPositionExt on CameraPosition {
   /// Return a [CameraPosition] which front and back is switched.
-  CameraPosition switched() => {
+  CameraPosition switched() =>
+      {
         CameraPosition.front: CameraPosition.back,
         CameraPosition.back: CameraPosition.front,
       }[this]!;
@@ -63,22 +61,22 @@ class CameraCaptureOptions extends VideoCaptureOptions {
     this.stopCameraCaptureOnMute = true,
     TrackProcessor<VideoProcessorOptions>? processor,
   }) : super(
-          params: params,
-          deviceId: deviceId,
-          maxFrameRate: maxFrameRate,
-          processor: processor,
-        );
+         params: params,
+         deviceId: deviceId,
+         maxFrameRate: maxFrameRate,
+         processor: processor,
+       );
 
   CameraCaptureOptions.from({required VideoCaptureOptions captureOptions})
-      : cameraPosition = CameraPosition.front,
-        focusMode = CameraFocusMode.auto,
-        exposureMode = CameraExposureMode.auto,
-        stopCameraCaptureOnMute = true,
-        super(
-          params: captureOptions.params,
-          deviceId: captureOptions.deviceId,
-          maxFrameRate: captureOptions.maxFrameRate,
-        );
+    : cameraPosition = CameraPosition.front,
+      focusMode = CameraFocusMode.auto,
+      exposureMode = CameraExposureMode.auto,
+      stopCameraCaptureOnMute = true,
+      super(
+        params: captureOptions.params,
+        deviceId: captureOptions.deviceId,
+        maxFrameRate: captureOptions.maxFrameRate,
+      );
 
   @override
   Map<String, dynamic> toMediaConstraintsMap() {
@@ -86,14 +84,14 @@ class CameraCaptureOptions extends VideoCaptureOptions {
       ...super.toMediaConstraintsMap(),
       if (deviceId == null)
         'facingMode':
-            cameraPosition == CameraPosition.front ? 'user' : 'environment'
+            cameraPosition == CameraPosition.front ? 'user' : 'environment',
     };
     if (deviceId != null) {
       if (kIsWeb) {
         constraints['deviceId'] = deviceId;
       } else {
         constraints['optional'] = [
-          {'sourceId': deviceId}
+          {'sourceId': deviceId},
         ];
       }
     }
@@ -110,15 +108,14 @@ class CameraCaptureOptions extends VideoCaptureOptions {
     String? deviceId,
     double? maxFrameRate,
     bool? stopCameraCaptureOnMute,
-  }) =>
-      CameraCaptureOptions(
-        params: params ?? this.params,
-        cameraPosition: cameraPosition ?? this.cameraPosition,
-        deviceId: deviceId ?? this.deviceId,
-        maxFrameRate: maxFrameRate ?? this.maxFrameRate,
-        stopCameraCaptureOnMute:
-            stopCameraCaptureOnMute ?? this.stopCameraCaptureOnMute,
-      );
+  }) => CameraCaptureOptions(
+    params: params ?? this.params,
+    cameraPosition: cameraPosition ?? this.cameraPosition,
+    deviceId: deviceId ?? this.deviceId,
+    maxFrameRate: maxFrameRate ?? this.maxFrameRate,
+    stopCameraCaptureOnMute:
+        stopCameraCaptureOnMute ?? this.stopCameraCaptureOnMute,
+  );
 }
 
 /// Options used when creating a [LocalVideoTrack] that captures the screen.
@@ -138,7 +135,7 @@ class ScreenShareCaptureOptions extends VideoCaptureOptions {
   final String? selfBrowserSurface;
 
   const ScreenShareCaptureOptions({
-    this.useiOSBroadcastExtension = false,
+    this.useiOSBroadcastExtension = true,
     this.captureScreenAudio = false,
     this.preferCurrentTab = false,
     this.selfBrowserSurface,
@@ -147,13 +144,13 @@ class ScreenShareCaptureOptions extends VideoCaptureOptions {
     VideoParameters params = VideoParametersPresets.screenShareH1080FPS15,
   }) : super(params: params, deviceId: sourceId, maxFrameRate: maxFrameRate);
 
-  ScreenShareCaptureOptions.from(
-      {this.useiOSBroadcastExtension = false,
-      this.captureScreenAudio = false,
-      this.preferCurrentTab = false,
-      this.selfBrowserSurface,
-      required VideoCaptureOptions captureOptions})
-      : super(params: captureOptions.params);
+  ScreenShareCaptureOptions.from({
+    this.useiOSBroadcastExtension = false,
+    this.captureScreenAudio = false,
+    this.preferCurrentTab = false,
+    this.selfBrowserSurface,
+    required VideoCaptureOptions captureOptions,
+  }) : super(params: captureOptions.params);
 
   ScreenShareCaptureOptions copyWith({
     bool? useiOSBroadcastExtension,
@@ -163,17 +160,16 @@ class ScreenShareCaptureOptions extends VideoCaptureOptions {
     double? maxFrameRate,
     bool? preferCurrentTab,
     String? selfBrowserSurface,
-  }) =>
-      ScreenShareCaptureOptions(
-        useiOSBroadcastExtension:
-            useiOSBroadcastExtension ?? this.useiOSBroadcastExtension,
-        captureScreenAudio: captureScreenAudio ?? this.captureScreenAudio,
-        params: params ?? this.params,
-        sourceId: sourceId ?? deviceId,
-        maxFrameRate: maxFrameRate ?? this.maxFrameRate,
-        preferCurrentTab: preferCurrentTab ?? this.preferCurrentTab,
-        selfBrowserSurface: selfBrowserSurface ?? this.selfBrowserSurface,
-      );
+  }) => ScreenShareCaptureOptions(
+    useiOSBroadcastExtension:
+        useiOSBroadcastExtension ?? this.useiOSBroadcastExtension,
+    captureScreenAudio: captureScreenAudio ?? this.captureScreenAudio,
+    params: params ?? this.params,
+    sourceId: sourceId ?? deviceId,
+    maxFrameRate: maxFrameRate ?? this.maxFrameRate,
+    preferCurrentTab: preferCurrentTab ?? this.preferCurrentTab,
+    selfBrowserSurface: selfBrowserSurface ?? this.selfBrowserSurface,
+  );
 
   @override
   Map<String, dynamic> toMediaConstraintsMap() {
@@ -335,9 +331,9 @@ class AudioCaptureOptions extends LocalTrackOptions {
       if (kIsWeb) {
         constraints['deviceId'] = deviceId;
       } else {
-        constraints['optional']
-            .cast<Map<String, dynamic>>()
-            .add(<String, dynamic>{'sourceId': deviceId});
+        constraints['optional'].cast<Map<String, dynamic>>().add(
+          <String, dynamic>{'sourceId': deviceId},
+        );
       }
     }
     return constraints;
