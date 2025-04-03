@@ -57,8 +57,7 @@ class LocalParticipant extends Participant<LocalTrackPublication> {
   // RPC Pending Responses
   final Map<String, Function(String? payload, RpcError? error)>
   _pendingResponses = {};
-
-  Function(bool isBroadcasting)? _onBroadcastStateChanged;
+  final Function(bool isBroadcasting)? _onBroadcastStateChanged;
 
   @internal
   LocalParticipant({
@@ -82,10 +81,13 @@ class LocalParticipant extends Participant<LocalTrackPublication> {
     });
   }
 
-  // 定义一个 setter 方法
-  set onBroadcastStateChanged(Function(bool isBroadcasting)? callback) {
-    _onBroadcastStateChanged = callback;
-    // 可以在这里添加额外的逻辑
+  /// Handle broadcast state change (iOS only)
+  void _broadcastStateChanged() {
+    final isEnabled =
+        BroadcastManager().isBroadcasting &&
+        BroadcastManager().shouldPublishTrack;
+    _onBroadcastStateChanged?.call(isEnabled);
+    setScreenShareEnabled(isEnabled);
   }
 
   bool isEnabledBroadcast() {
@@ -95,13 +97,8 @@ class LocalParticipant extends Participant<LocalTrackPublication> {
     return isEnabled;
   }
 
-  /// Handle broadcast state change (iOS only)
-  void _broadcastStateChanged() {
-    final isEnabled =
-        BroadcastManager().isBroadcasting &&
-        BroadcastManager().shouldPublishTrack;
-    _onBroadcastStateChanged?.call(isEnabled);
-    setScreenShareEnabled(isEnabled);
+  set onBroadcastStateChanged(Function(bool isBroadcasting) callback) {
+    _onBroadcastStateChanged = callback;
   }
 
   void broadcastActivation() {
