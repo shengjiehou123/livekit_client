@@ -20,4 +20,6 @@ enum BroadcastBundleInfo {
     /// Bundle identifier of the broadcast extension.
     @BundleInfo("RTCScreenSharingExtension")
     static var screenSharingExtension: String?
+    @BundleInfo("RTCAppGroupIdentifier")
+    static var appGroupIdentifier: String?
 }

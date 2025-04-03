@@ -30,12 +30,22 @@ final class BroadcastManager {
         .eraseToAnyPublisher()
 
     func requestActivation() {
-        guard let bundleIdentifier = BroadcastBundleInfo.screenSharingExtension else { return }
+        guard let bundleIdentifier = BroadcastBundleInfo.screenSharingExtension else {
+         print("requestActivation Screen sharing extension not found.") 
+         return 
+        }
+        print("requestActivation \(bundleIdentifier)") 
         Task { await Self.showPicker(for: bundleIdentifier) }
     }
 
     func requestStop() {
         DarwinNotificationCenter.shared.postNotification(.broadcastRequestStop)
+        guard let appGroupIdentifier = BroadcastBundleInfo.appGroupIdentifier else {
+            return
+        }
+        let sharedDefaults = UserDefaults(suiteName: appGroupIdentifier)
+        sharedDefaults?.set(true, forKey: "StopBroadcast")
+        sharedDefaults?.synchronize()
     }
 
     /// Convenience function to show broadcast extension picker.
